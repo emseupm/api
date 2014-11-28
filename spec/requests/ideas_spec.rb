@@ -65,7 +65,7 @@ describe '/api/ideas requests', type: :request do
     expect(Idea.count).to be(1)
   end
 
-  it 'creates a new idea with a name' do
+  it 'creates a new idea with a name attr' do
     post 'api/ideas.json', :name => "new_idea"
     idea = Idea.first
     expect(Idea.where(name: idea.name)).to_not be_empty
