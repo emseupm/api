@@ -50,5 +50,27 @@ describe '/api/ideas requests', type: :request do
       expect(idea_json.keys).to eq([ :id, :name ])
     end
   end
+  it 'returns HTTP 200 on post' do
+    post '/api/ideas.json'
+    expect(response.status).to be(200)
+  end 
 
+  it 'returns json response' do
+    post '/api/ideas.json'
+    expect(response.content_type).to eq("application/json")
+  end
+
+  it 'creates a new idea' do
+    post 'api/ideas.json'
+    expect(Idea.count).to be(1)
+  end
+
+  it 'creates a new idea with a name' do
+    post 'api/ideas.json', :name => "new_idea"
+    idea = Idea.first
+    expect(Idea.where(name: idea.name)).to_not be_empty
+  end
+  
 end
+  
+
