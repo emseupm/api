@@ -47,8 +47,8 @@ end
 gem "factory_girl_rails", "~> 4.0"
 gem "factory_girl", "~> 4.0"
 
-
 # Heroku integration
 gem 'rails_12factor'
 
-
+# CORS
+gem 'rack-cors', require: 'rack/cors'
