@@ -11,16 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141205120605) do
+ActiveRecord::Schema.define(version: 20141205124108) do
 
   create_table "ideas", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.string   "description"
-    t.string   "email"
-    t.string   "keyword"
     t.integer  "user_id"
+    t.boolean  "published"
+    t.string   "description"
+    t.string   "keyword"
   end
 
   add_index "ideas", ["user_id"], name: "index_ideas_on_user_id", using: :btree

@@ -10,9 +10,10 @@ describe '/api/ideas requests', type: :request do
   end
 
   context 'successful requests' do
+    let(:current_user) { FactoryGirl.create :user}
+
     before(:each) do
-      user = FactoryGirl.create :user
-      login_as user, scope: :user
+      login_as current_user, scope: :user
     end
 
     let(:idea_user) { User.create email: "vero@vero.com", 
@@ -125,6 +126,16 @@ describe '/api/ideas requests', type: :request do
       post 'api/ideas.json', :name => "new_idea"
       idea = Idea.first
       expect(Idea.where(name: idea.name)).to_not be_empty
+    end
+
+    context 'private ideas' do
+      it 'return empty if the user has no ideas' do
+        another_user = FactoryGirl.create :user
+        idea = Idea.create name: 'Awesome Idea', user: another_user
+        get 'api/ideas/mine.json'
+        json = JSON.parse response.body
+        expect(json).to be_empty
+      end
     end
   end
 end
