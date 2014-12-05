@@ -2,6 +2,12 @@ require 'rails_helper'
 
 describe '/api/ideas requests', type: :request do
 
+
+  let(:idea_user) { User.create email: "vero@vero.com", 
+                                password: "veronica",
+                                first_name: "veronica",
+                                last_name: "brynza"}
+
   it 'returns HTTP 200' do
     get '/api/ideas.json'
     expect(response.status).to be(200)
@@ -19,7 +25,7 @@ describe '/api/ideas requests', type: :request do
   end
 
   it 'returns an array with a single Idea when there is one in the DB' do
-    Idea.create name: 'Super awesome idea'
+    Idea.create name: 'Super awesome idea', user: idea_user
 
     get '/api/ideas.json'
     json = JSON.parse response.body
@@ -30,13 +36,10 @@ describe '/api/ideas requests', type: :request do
   context 'returns object attributes' do
     let(:idea_name) { 'Super awesome idea' }
     let(:idea_desc) { 'Yes, my idea is awesome =)' }
-    let(:idea_email) { "imawesome@awesomness.com" }
-    let(:idea_owner) {" I own this shit "}
     let(:idea_keyword) { "Vero key" }
     let(:idea) { Idea.create name: idea_name, 
                              description: idea_desc,
-                             email: idea_email,
-                             owner: idea_owner,
+                             user: idea_user,
                              keyword: idea_keyword}
    
     let(:idea_json) do
@@ -57,19 +60,32 @@ describe '/api/ideas requests', type: :request do
     it ':description' do
       expect(idea_json[:description]).to eq(idea.description)
     end
-    it ':email' do
-      expect(idea_json[:email]).to eq(idea.email)
+    
+    it ':owner.id' do
+      expect(idea_json[:owner][:id]).to eq(idea.user.id)
     end
-    it ':owner' do
-      expect(idea_json[:owner]).to eq(idea.owner)
+    it ':owner.first_name' do
+      expect(idea_json[:owner][:first_name]).to eq(idea.user.first_name)
     end
+    it ':owner.last_name' do
+      expect(idea_json[:owner][:last_name]).to eq(idea.user.last_name)
+    end
+    it ':owner.email' do
+      expect(idea_json[:owner][:email]).to eq(idea.user.email)
+    end
+
+    it ':owner.phone' do
+      expect(idea_json[:owner][:phone]).to eq(idea.user.phone)
+    end
+
+
     it ':keyword' do
       expect(idea_json[:keyword]).to eq(idea.keyword)
     end
 
     it 'does not include any other attribute' do
       expect(idea_json.keys).to eq([ :id, :name, :description, 
-                                     :email, :owner, :keyword ])
+                                     :owner, :keyword ])
     end
   end
   it 'returns HTTP 200 on post' do

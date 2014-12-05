@@ -10,8 +10,10 @@ describe Idea, type: :model do
   context 'create ideas' do
     let(:idea_name) { "Awesome idea" }
     let(:idea_desc) { " Yes, my idea is awesome =)" }
-    let(:idea_email) { "imawesome@awesomness.com" }
-    let(:idea_owner) {" I own this shit "}
+    let(:idea_user) { User.create email: "vero@vero.com", 
+                                  password: "veronica",
+                                  first_name: "veronica",
+                                  last_name: "brynza"}
     let(:idea_keyword) { "Vero key" }
 
     it '.name' do
@@ -25,26 +27,18 @@ describe Idea, type: :model do
       
       expect(idea.description).to eq(idea_desc)
     end 
-    it '.email' do  
+    it '.user' do  
       idea = Idea.create(name: idea_name, 
-                         description: idea_desc,
-                         email: idea_email)
+                         description: idea_desc)
       
-      expect(idea.email).to eq(idea_email)
-    end 
-    it '.owner' do  
-      idea = Idea.create(name: idea_name, 
-                         description: idea_desc,
-                         email: idea_email,
-                         owner: idea_owner)
-      
-      expect(idea.owner).to eq(idea_owner)
-    end 
+      idea.update user_id: idea_user.id
+
+      expect(idea.user).to eq(idea_user)
+    end
+
     it '.keywords' do  
       idea = Idea.create(name: idea_name, 
                          description: idea_desc,
-                         email: idea_email,
-                         owner: idea_owner,
                          keyword: idea_keyword)
       
       expect(idea.keyword).to eq(idea_keyword)
