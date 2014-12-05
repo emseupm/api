@@ -52,3 +52,7 @@ gem 'rails_12factor'
 
 # CORS
 gem 'rack-cors', require: 'rack/cors'
+
+# Devise for authentication
+gem 'devise'
+
