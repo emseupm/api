@@ -29,10 +29,18 @@ describe '/api/ideas requests', type: :request do
 
   context 'returns object attributes' do
     let(:idea_name) { 'Super awesome idea' }
-    let(:idea) { Idea.create name: idea_name }
+    let(:idea_desc) { 'Yes, my idea is awesome =)' }
+    let(:idea_email) { "imawesome@awesomness.com" }
+    let(:idea_owner) {" I own this shit "}
+    let(:idea_keyword) { "Vero key" }
+    let(:idea) { Idea.create name: idea_name, 
+                             description: idea_desc,
+                             email: idea_email,
+                             owner: idea_owner,
+                             keyword: idea_keyword}
+   
     let(:idea_json) do
       idea # trigger object creation
-
       get '/api/ideas.json'
       json = JSON.parse response.body, symbolize_names: true
       json.first
@@ -46,8 +54,22 @@ describe '/api/ideas requests', type: :request do
       expect(idea_json[:name]).to eq(idea.name)
     end
 
+    it ':description' do
+      expect(idea_json[:description]).to eq(idea.description)
+    end
+    it ':email' do
+      expect(idea_json[:email]).to eq(idea.email)
+    end
+    it ':owner' do
+      expect(idea_json[:owner]).to eq(idea.owner)
+    end
+    it ':keyword' do
+      expect(idea_json[:keyword]).to eq(idea.keyword)
+    end
+
     it 'does not include any other attribute' do
-      expect(idea_json.keys).to eq([ :id, :name ])
+      expect(idea_json.keys).to eq([ :id, :name, :description, 
+                                     :email, :owner, :keyword ])
     end
   end
   it 'returns HTTP 200 on post' do
@@ -71,6 +93,11 @@ describe '/api/ideas requests', type: :request do
     expect(Idea.where(name: idea.name)).to_not be_empty
   end
   
+  it 'creates a new idea with a name attr' do
+    post 'api/ideas.json', :name => "new_idea"
+    idea = Idea.first
+    expect(Idea.where(name: idea.name)).to_not be_empty
+  end
 end
   
 
