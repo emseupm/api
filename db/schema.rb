@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141205124108) do
+ActiveRecord::Schema.define(version: 20141205135926) do
 
   create_table "ideas", force: true do |t|
     t.datetime "created_at"
@@ -21,8 +21,10 @@ ActiveRecord::Schema.define(version: 20141205124108) do
     t.boolean  "published"
     t.string   "description"
     t.string   "keyword"
+    t.integer  "buyer_id"
   end
 
+  add_index "ideas", ["buyer_id"], name: "index_ideas_on_buyer_id", using: :btree
   add_index "ideas", ["user_id"], name: "index_ideas_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
