@@ -13,4 +13,18 @@ class ApplicationController < ActionController::Base
     headers['Access-Control-Request-Method'] = '*'
     headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   end
+
+  def authenticate_admin_user!
+      raise SecurityError unless current_user.try(:admin?)
+  end
+
+  def current_admin_user
+    current_user.try(:admin?)
+  end
+
+  rescue_from SecurityError do |exception|
+    render body: "Forbidden", status: 403
+  end
+
+
 end

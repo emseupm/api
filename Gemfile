@@ -55,4 +55,5 @@ gem 'rack-cors', require: 'rack/cors'
 
 # Devise for authentication
 gem 'devise'
+gem 'activeadmin', github: 'activeadmin'
 
