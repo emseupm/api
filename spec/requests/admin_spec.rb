@@ -17,5 +17,3 @@ describe 'CRUD of users from admin interface', type: :request do
     expect(response.status).to eq(200)
   end
 end
-
-
