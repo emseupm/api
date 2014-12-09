@@ -72,8 +72,11 @@ ActiveRecord::Schema.define(version: 20141208195011) do
     t.string   "email"
     t.string   "keyword"
     t.integer  "user_id"
+    t.boolean  "published"
+    t.integer  "buyer_id"
   end
 
+  add_index "ideas", ["buyer_id"], name: "index_ideas_on_buyer_id", using: :btree
   add_index "ideas", ["user_id"], name: "index_ideas_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
