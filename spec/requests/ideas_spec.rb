@@ -38,25 +38,20 @@ describe '/api/ideas requests', type: :request do
     end
 
     it 'returns an array with a single Idea when there is one in the DB' do
-      Idea.create name: 'Super awesome idea', user: idea_user
+      idea = FactoryGirl.create :published_idea, user: current_user
 
-      get '/api/ideas.json'
+      get '/api/ideas.json', controller: :index
       json = JSON.parse response.body
 
       expect(json.count).to be(1)
     end
 
     context 'returns object attributes' do
-      let(:idea_name) { 'Super awesome idea' }
-      let(:idea_desc) { 'Yes, my idea is awesome =)' }
-      let(:idea_keyword) { "Vero key" }
-      let(:idea) { Idea.create name: idea_name, 
-                               description: idea_desc,
-                               user: idea_user,
-                               keyword: idea_keyword}
+      let(:idea) { FactoryGirl.create :published_idea, user: current_user }
    
       let(:idea_json) do
-        idea # trigger object creation
+        idea # Trigger idea creation
+
         get '/api/ideas.json'
         json = JSON.parse response.body, symbolize_names: true
         json.first
@@ -98,7 +93,7 @@ describe '/api/ideas requests', type: :request do
 
       it 'does not include any other attribute' do
         expect(idea_json.keys).to eq([ :id, :name, :description, 
-                                       :owner, :keyword ])
+                                       :owner, :keyword, :published ])
       end
     end
     it 'returns HTTP 200 on post' do
