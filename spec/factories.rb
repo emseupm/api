@@ -1,5 +1,10 @@
-FactoryGirl.define do  
-    
+FactoryGirl.define do
+
+  factory :vote do
+    user 
+    idea
+  end
+  
   factory :comment do
        
   end

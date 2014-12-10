@@ -42,6 +42,13 @@ describe Idea, type: :model do
                          keyword: idea_keyword)
       
       expect(idea.keyword).to eq(idea_keyword)
+    end
+
+    it '.votes' do
+      idea = FactoryGirl.create :idea
+      user = FactoryGirl.create :user
+      vote = FactoryGirl.create :vote, user: user, idea: idea
+      expect(idea.votes.to_a).to eq([ vote ])
     end 
   end
 end

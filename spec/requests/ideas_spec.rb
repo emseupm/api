@@ -91,9 +91,17 @@ describe '/api/ideas requests', type: :request do
         expect(idea_json[:keyword]).to eq(idea.keyword)
       end
 
+      context ':votes' do 
+        it 'is the number of votes for the idea' do
+          vote_count = 10
+          idea.votes << FactoryGirl.create_list(:vote, vote_count)
+          expect(idea_json[:votes]).to be(vote_count)
+        end
+      end
+
       it 'does not include any other attribute' do
         expect(idea_json.keys).to eq([ :id, :name, :description, 
-                                       :owner, :keyword, :published ])
+                                       :owner, :keyword, :published, :votes ])
       end
     end
     it 'returns HTTP 200 on post' do

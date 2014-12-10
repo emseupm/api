@@ -9,3 +9,4 @@ json.buyer do
 end
 json.keyword idea.keyword
 json.published idea.published
+json.votes idea.votes.count
