@@ -19,11 +19,11 @@ class ApplicationController < ActionController::Base
   end
 
   def current_admin_user
-    current_user.admin?
+    current_user
   end
 
   rescue_from SecurityError do |exception|
-    render body: "Forbidden", status: 403
+    redirect_to new_user_session_url
   end
 
 

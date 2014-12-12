@@ -1,7 +1,7 @@
 ActiveAdmin.register User do
   
   permit_params :name, :email, :password, :first_name,
-                :last_name, :phone, :admin
+                :last_name, :phone, :roles
 
   filter :email
   filter :firts_name
