@@ -3,7 +3,6 @@ class Api::IdeasController < ApplicationController
   before_action :authenticate_user!
 
   def index
-      raise current_user.inspect
     if current_user.moderator? || current_user.admin?
       @ideas = Idea.all
     else
