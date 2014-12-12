@@ -244,22 +244,31 @@ describe '/api/ideas requests', type: :request do
     let(:moderator) { FactoryGirl.create :moderator, email: 'superuser@gmail.com' }
     let(:entrepreneur) { FactoryGirl.create :entrepreneur }
     let(:entrepreneur2) { FactoryGirl.create :entrepreneur }
-    before do
-      login_as moderator, scope: :user
-    end 
+
     it 'moderators and admins get all the ideas' do
+      login_as moderator, scope: :user
+
       FactoryGirl.create :idea
       FactoryGirl.create :published_idea
-      
-      get '/api/ideas.json'
+
+      get '/api/ideas/all.json'
       json = JSON.parse response.body
-      expect(json.count).to eq(2)
+      expect(json.count).to be(2)
     end
 
-    before do
+    it 'entrepeneurs cannot get all the ideas' do
       login_as entrepreneur, scope: :user
+
+      FactoryGirl.create :idea
+      FactoryGirl.create :published_idea
+
+      get '/api/ideas/all.json'
+      expect(response.status).to be(403)
     end
+
     it 'entrepeneur cannot delete others entrepeneurs ideas' do
+      login_as entrepreneur, scope: :user
+
       new_idea = FactoryGirl.create :published_idea, user: entrepreneur2
       delete '/api/ideas/' + new_idea.id.to_s + '.json'
       expect(response.body).to eq('[]')

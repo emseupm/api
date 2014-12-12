@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       collection do
         get :mine
         get :search
+        get :all
       end
         
       resources :comments, shallow: true

@@ -2,12 +2,17 @@ class Api::IdeasController < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_action :authenticate_user!
 
-  def index
+  def all
     if current_user.moderator? || current_user.admin?
       @ideas = Idea.all
+      render :index
     else
-      @ideas = Idea.published.free
+      render nothing: true, status: 403
     end
+  end
+
+  def index
+    @ideas = Idea.published.free
   end
 
   def show

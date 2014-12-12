@@ -9,7 +9,6 @@ describe 'CRUD of users from admin interface', type: :request do
   end
 
   it 'Returns 200 if user is admin' do
-
     user = FactoryGirl.create :admin
     login_as user
 
