@@ -17,6 +17,8 @@ Rails.application.routes.draw do
         post :accept
         post :reject
       end
+
+      resources :votes
     end
   end
 end
