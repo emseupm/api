@@ -11,6 +11,9 @@ Rails.application.routes.draw do
       collection do
         get :mine
       end
+        
+      resources :comments, shallow: true
+
       member do
         post :buy
         post :accept

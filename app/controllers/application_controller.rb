@@ -15,11 +15,11 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_admin_user!
-      raise SecurityError unless current_user.try(:admin?)
+      raise SecurityError unless current_user.admin?
   end
 
   def current_admin_user
-    current_user.try(:admin?)
+    current_user.admin?
   end
 
   rescue_from SecurityError do |exception|

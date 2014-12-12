@@ -10,7 +10,7 @@ describe '/api/ideas requests', type: :request do
   end
 
   context 'successful requests' do
-    let(:current_user) { FactoryGirl.create :user}
+    let(:current_user) { FactoryGirl.create :entrepreneur}
 
     before(:each) do
       login_as current_user, scope: :user
@@ -81,19 +81,25 @@ describe '/api/ideas requests', type: :request do
       it ':owner.email' do
         expect(idea_json[:owner][:email]).to eq(idea.user.email)
       end
-
       it ':owner.phone' do
         expect(idea_json[:owner][:phone]).to eq(idea.user.phone)
       end
-
-
       it ':keyword' do
         expect(idea_json[:keyword]).to eq(idea.keyword)
+      end
+          
+      it 'contains comments' do
+        comment1 = FactoryGirl.create :comment
+        comment2 = FactoryGirl.create :comment
+        idea.comments << comment1
+        idea.comments << comment2
+        expect(idea_json[:comments].length).to eq(2)
       end
 
       it 'does not include any other attribute' do
         expect(idea_json.keys).to eq([ :id, :name, :description, 
-                                       :owner, :keyword, :published ])
+                                       :owner, :keyword, :comments,
+                                       :published])
       end
     end
     it 'returns HTTP 200 on post' do
@@ -132,6 +138,43 @@ describe '/api/ideas requests', type: :request do
         expect(json).to be_empty
       end
     end
+
+    it 'entrepeneur cannot delet others entrepeneurs ideas' do
+      entrepreneur = FactoryGirl.create :entrepreneur
+      new_idea = FactoryGirl.create :idea, user: entrepreneur
+      delete '/api/ideas/' + new_idea.id.to_s + '.json'
+      
+      expect(response.body).to be(401)
+    end
+
+    context 'comments API' do
+      let(:idea) { FactoryGirl.create :published_idea, user: current_user}
+      let(:text) { "My awesome comment" }
+      
+      it "returns HTTP 200 on post" do
+        post '/api/ideas/' + idea.id.to_s + '/comments.json'
+        expect(response.status).to be(200)
+      end
+      
+      it "creates a comment" do
+        post '/api/ideas/' + idea.id.to_s + '/comments.json', 
+                    comment: text
+        expect(Comment.count).to be(1)
+      end
+
+      it "assigns correct user" do
+        post '/api/ideas/' + idea.id.to_s + '/comments.json', 
+                    comment: text
+        json = JSON.parse response.body
+        expect(current_user.id).to eq(json["user_id"])
+      end
+      it "assigns correct text to comment" do
+        post '/api/ideas/' + idea.id.to_s + '/comments.json', 
+                    comment: text
+        json = JSON.parse response.body
+        expect(text).to eq(json["comment"])
+      end
+    end 
   end
 end
   

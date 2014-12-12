@@ -14,9 +14,7 @@ ActiveAdmin.register User do
       "#{user.first_name} #{user.last_name}"
     end
 
-    column "Admin?", :admin do |user|
-      "#{user.admin}"
-    end
+    column :roles
     column do |user|
       link_to('Edit', edit_admin_user_path(user))
     end 
@@ -29,7 +27,7 @@ ActiveAdmin.register User do
       f.input :email
       f.input :password
       f.input :password_confirmation, :label => "Re-enter password"
-      f.input :admin, :as => :radio
+      f.input :roles, :as => :select, :collection => User.roles.keys
     end
       
     f.inputs 'User information' do
