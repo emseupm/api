@@ -12,7 +12,7 @@ FactoryGirl.define do
   end
 
   factory :idea do
-    name "Ismael's Idea"
+    sequence (:name) { |n| "Good Idea #{n}" }
     factory :published_idea do
       published true
     end
@@ -24,6 +24,7 @@ FactoryGirl.define do
       end
     end
     keywords "key"
+    published false
   end
 
   factory :user do

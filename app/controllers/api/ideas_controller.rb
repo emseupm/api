@@ -3,7 +3,12 @@ class Api::IdeasController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @ideas = Idea.published.free
+      raise current_user.inspect
+    if current_user.moderator? || current_user.admin?
+      @ideas = Idea.all
+    else
+      @ideas = Idea.published.free
+    end
   end
 
   def show
@@ -27,8 +32,15 @@ class Api::IdeasController < ApplicationController
   end
 
   def destroy
-    idea = current_user.ideas.find params[:id]
-    idea.destroy
+    if current_user.admin? || current_user.moderator?
+        idea = Idea.where(id: params[:id])
+    else
+        idea = current_user.ideas.where(id: params[:id])
+    end
+
+    if not idea.blank?
+      idea.destroy
+    end
     render json: idea
   end
 

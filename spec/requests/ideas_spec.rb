@@ -122,8 +122,8 @@ describe '/api/ideas requests', type: :request do
 
       it 'does not include any other attribute' do
         expect(idea_json.keys).to eq([ :id, :name, :description, 
-                                       :owner, :keywords, :published, 
-                                       :comments, :votes, :voted ])
+                                       :owner, :comments, :keywords, :published, 
+                                       :votes, :voted ])
       end
     end
     it 'returns HTTP 200 on post' do
@@ -153,6 +153,8 @@ describe '/api/ideas requests', type: :request do
       expect(Idea.where(name: idea.name)).to_not be_empty
     end
 
+    
+    
     context 'private ideas' do
       it 'return empty if the user has no ideas' do
         another_user = FactoryGirl.create :user
@@ -161,14 +163,6 @@ describe '/api/ideas requests', type: :request do
         json = JSON.parse response.body
         expect(json).to be_empty
       end
-    end
-
-    it 'entrepeneur cannot delet others entrepeneurs ideas' do
-      entrepreneur = FactoryGirl.create :entrepreneur
-      new_idea = FactoryGirl.create :idea, user: entrepreneur
-      delete '/api/ideas/' + new_idea.id.to_s + '.json'
-      
-      expect(response.body).to be(401)
     end
 
     context 'comments API' do
@@ -199,6 +193,7 @@ describe '/api/ideas requests', type: :request do
         expect(text).to eq(json["comment"])
       end
     end 
+
     context '/search' do
       let(:matching_texts) { [ 'Some awesome idea', 'My super awesome idea' ] }
       let(:sample_texts) { matching_texts + [ 'An idea that is just great', 'Other idea not just so amazing' ] }
@@ -243,6 +238,31 @@ describe '/api/ideas requests', type: :request do
 
         include_examples 'returns proper ideas', :keywords
       end
+    end
+  end
+  context 'user roles' do
+    let(:moderator) { FactoryGirl.create :moderator, email: 'superuser@gmail.com' }
+    let(:entrepreneur) { FactoryGirl.create :entrepreneur }
+    let(:entrepreneur2) { FactoryGirl.create :entrepreneur }
+    before do
+      login_as moderator, scope: :user
+    end 
+    it 'moderators and admins get all the ideas' do
+      FactoryGirl.create :idea
+      FactoryGirl.create :published_idea
+      
+      get '/api/ideas.json'
+      json = JSON.parse response.body
+      expect(json.count).to eq(2)
+    end
+
+    before do
+      login_as entrepreneur, scope: :user
+    end
+    it 'entrepeneur cannot delete others entrepeneurs ideas' do
+      new_idea = FactoryGirl.create :published_idea, user: entrepreneur2
+      delete '/api/ideas/' + new_idea.id.to_s + '.json'
+      expect(response.body).to eq('[]')
     end
   end
 end
