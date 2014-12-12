@@ -14,7 +14,7 @@ describe Idea, type: :model do
                                   password: "veronica",
                                   first_name: "veronica",
                                   last_name: "brynza"}
-    let(:idea_keyword) { "Vero key" }
+    let(:idea_keywords) { "Vero key" }
 
     it '.name' do
       idea = Idea.create name: idea_name
@@ -39,9 +39,16 @@ describe Idea, type: :model do
     it '.keywords' do  
       idea = Idea.create(name: idea_name, 
                          description: idea_desc,
-                         keyword: idea_keyword)
+                         keywords: idea_keywords)
       
-      expect(idea.keyword).to eq(idea_keyword)
+      expect(idea.keywords).to eq(idea_keywords)
+    end
+
+    it '.votes' do
+      idea = FactoryGirl.create :idea
+      user = FactoryGirl.create :user
+      vote = FactoryGirl.create :vote, user: user, idea: idea
+      expect(idea.votes.to_a).to eq([ vote ])
     end 
   end
 end

@@ -7,6 +7,8 @@ end
 json.buyer do
   json.partial! 'user', user: idea.buyer if idea.buyer
 end
-json.keyword idea.keyword
 json.comments idea.comments, partial: 'api/comments/comment', as: :comment
+json.keywords idea.keywords
 json.published idea.published
+json.votes idea.votes.count
+json.voted idea.voted?(current_user)

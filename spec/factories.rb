@@ -1,5 +1,10 @@
-FactoryGirl.define do  
-    
+FactoryGirl.define do
+
+  factory :vote do
+    user 
+    idea
+  end
+  
   factory :comment do
     user
     sequence (:comment) { |n| "My awesome comment #{n}" }
@@ -12,14 +17,15 @@ FactoryGirl.define do
       published true
     end
     description "Awesome idea"
-    keyword "key"
     factory :idea_with_comments do
       published true
       after(:create) do |idea, evaluator| 
         create_list(:comment, 3, idea: idea)
       end
     end
+    keywords "key"
   end
+
   factory :user do
     sequence (:email) { |n| "john.doe#{n}@example.com" }
     password '12345678'

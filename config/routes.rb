@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :ideas do
       collection do
         get :mine
+        get :search
       end
         
       resources :comments, shallow: true
@@ -19,6 +20,8 @@ Rails.application.routes.draw do
         post :accept
         post :reject
       end
+
+      resources :votes
     end
   end
 end
