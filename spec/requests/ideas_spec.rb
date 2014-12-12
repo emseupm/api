@@ -140,6 +140,52 @@ describe '/api/ideas requests', type: :request do
         expect(json).to be_empty
       end
     end
+
+    context '/search' do
+      let(:matching_texts) { [ 'Some awesome idea', 'My super awesome idea' ] }
+      let(:sample_texts) { matching_texts + [ 'An idea that is just great', 'Other idea not just so amazing' ] }
+      let(:json) do
+        ideas # trigger object creation
+
+        get 'api/ideas/search.json', { query: 'awesome' }
+        json = JSON.parse response.body, symbolize_names: true
+      end
+
+      shared_examples 'returns proper ideas' do |attribute|
+        it 'count' do
+          expect(json.count).to be(matching_texts.count)
+        end
+
+        it "#{attribute}" do
+          expect(json.map { |e| e[attribute] }).to eq(matching_texts)
+        end
+      end
+
+      it 'returns empty if the query has less than 3 characters' do
+        FactoryGirl.create_list :idea, 10
+        get 'api/ideas/search.json', { query: '' }
+        json = JSON.parse response.body
+        expect(json).to be_empty
+      end
+
+      context 'searches for ideas by name' do
+        let(:ideas) { sample_texts.each { |name| FactoryGirl.create :idea, name: name, description: 'Some idea' } }
+
+        include_examples 'returns proper ideas', :name
+      end
+
+      context 'searches for ideas by description' do
+        let(:ideas) { sample_texts.each_with_index { |description, index| FactoryGirl.create :idea, name: "My Idea #{index}", description: description } }
+
+        include_examples 'returns proper ideas', :description
+      end
+
+      context 'searches for ideas by keywords' do
+        let(:ideas) { sample_texts.each_with_index { |keywords, index| FactoryGirl.create :idea, name: "My Idea #{index}", description: "My Idea #{index}", keywords: keywords } }
+
+        include_examples 'returns proper ideas', :keywords
+      end
+    end
   end
 end
   

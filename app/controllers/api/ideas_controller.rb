@@ -51,6 +51,16 @@ class Api::IdeasController < ApplicationController
     render json: idea
   end
 
+  def search
+    if "#{params[:query]}".length > 3
+      @ideas = Idea.where('name LIKE ? OR description LIKE ? OR keywords LIKE ?', "%#{params[:query]}%", "%#{params[:query]}%", "%#{params[:query]}%")
+    else
+      @ideas = Idea.none
+    end
+
+    render :index
+  end
+
   private
 
   def idea_params

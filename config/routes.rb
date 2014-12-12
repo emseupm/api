@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :ideas do
       collection do
         get :mine
+        get :search
       end
       member do
         post :buy
