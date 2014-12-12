@@ -87,8 +87,8 @@ describe '/api/ideas requests', type: :request do
       end
 
 
-      it ':keyword' do
-        expect(idea_json[:keyword]).to eq(idea.keyword)
+      it ':keywords' do
+        expect(idea_json[:keywords]).to eq(idea.keywords)
       end
 
       context ':votes' do 
@@ -101,7 +101,7 @@ describe '/api/ideas requests', type: :request do
 
       it 'does not include any other attribute' do
         expect(idea_json.keys).to eq([ :id, :name, :description, 
-                                       :owner, :keyword, :published, :votes ])
+                                       :owner, :keywords, :published, :votes ])
       end
     end
     it 'returns HTTP 200 on post' do

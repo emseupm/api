@@ -54,7 +54,7 @@ class Api::IdeasController < ApplicationController
   private
 
   def idea_params
-    params.permit(:name, :description, :keyword, :published)
+    params.permit(:name, :description, :keywords, :published)
   end
 
 end

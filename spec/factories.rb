@@ -15,7 +15,7 @@ FactoryGirl.define do
       published true
     end
     description "Awesome idea"
-    keyword "key"
+    keywords "key"
   end
 
   factory :user do
