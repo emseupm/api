@@ -10,3 +10,4 @@ end
 json.keywords idea.keywords
 json.published idea.published
 json.votes idea.votes.count
+json.voted idea.voted?(current_user)

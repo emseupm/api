@@ -5,4 +5,8 @@ class Idea < ActiveRecord::Base
 
   scope :published, -> { where(published: true) }
   scope :free, -> { where(buyer: nil) }
+
+  def voted?(user)
+    votes.where(user: user).exists?
+  end
 end

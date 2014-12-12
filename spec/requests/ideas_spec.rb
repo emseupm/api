@@ -99,9 +99,24 @@ describe '/api/ideas requests', type: :request do
         end
       end
 
+      context ':voted' do
+        it 'returns false if the current_user has not voted for the idea' do
+          vote_count = 10
+          idea.votes << FactoryGirl.create_list(:vote, vote_count)
+          expect(idea_json[:voted]).to be(false)
+        end
+
+        it 'returns false if the current_user has not voted for the idea' do
+          vote_count = 10
+          idea.votes << FactoryGirl.create_list(:vote, vote_count)
+          FactoryGirl.create :vote, user: current_user
+          expect(idea_json[:voted]).to be(false)
+        end
+      end
+
       it 'does not include any other attribute' do
         expect(idea_json.keys).to eq([ :id, :name, :description, 
-                                       :owner, :keywords, :published, :votes ])
+                                       :owner, :keywords, :published, :votes, :voted ])
       end
     end
     it 'returns HTTP 200 on post' do
